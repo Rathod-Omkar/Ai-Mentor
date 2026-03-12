@@ -85,6 +85,15 @@ router.post("/login", async (req, res) => {
         purchasedCourses: user.purchasedCourses,
         token: generateToken(user.id),
       });
+
+      // ✅ Notification Trigger (Security Alert)
+      import("../controllers/notificationController.js").then(({ createNotification }) => {
+        createNotification(user.id, {
+          title: "New Login Detected",
+          message: `A new login was detected for your account at ${new Date().toLocaleString()}.`,
+          type: "security",
+        });
+      });
     } else {
       console.log("Login failed: password mismatch.");
       res.status(401).json({ message: "Invalid email or password" });
@@ -232,6 +241,15 @@ router.post("/reset-password/:token", async (req, res) => {
     user.resetPasswordExpires = null;
 
     await user.save();
+
+    // ✅ Notification Trigger (Password Change)
+    import("../controllers/notificationController.js").then(({ createNotification }) => {
+      createNotification(user.id, {
+        title: "Password Changed",
+        message: "Your password has been successfully reset. If this wasn't you, please secure your account.",
+        type: "security",
+      });
+    });
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
