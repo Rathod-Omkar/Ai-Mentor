@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
 import { getAIVideo } from "../service/aiService";
@@ -186,7 +186,7 @@ export default function Learning() {
 
           // Priority 1: Check if the user clicked "Resume" on a specific video from the Watched Videos dashboard.
           // This is passed via React Router's location state.
-          if (location.state?.lessonId) {
+          if (location?.state?.lessonId) {
             initialLesson = findFullLesson(location.state.lessonId);
           }
 
