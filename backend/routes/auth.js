@@ -247,13 +247,17 @@ router.post("/reset-password/:token", async (req, res) => {
     await user.save();
 
     // ✅ Notification Trigger (Password Change)
-    import("../controllers/notificationController.js").then(({ createNotification }) => {
-      createNotification(user.id, {
-        title: "Password Changed",
-        message: "Your password has been successfully reset. If this wasn't you, please secure your account.",
-        type: "security",
+    import("../controllers/notificationController.js")
+      .then(({ createNotification }) => {
+        createNotification(user.id, {
+          title: "Password Changed",
+          message: "Your password has been successfully reset. If this wasn't you, please secure your account.",
+          type: "security",
+        });
+      })
+      .catch((error) => {
+        console.error("Password reset notification error:", error);
       });
-    });
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
