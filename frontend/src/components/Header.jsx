@@ -6,14 +6,17 @@ import ThemeToggle from "../components/common/ThemeToggle";
 import { useSidebar } from "../context/SidebarContext";
 import { useTranslation } from "react-i18next";
 
-const Header = () => {
+const Header = ({ searchQuery = "", onSearchChange }) => {
   const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [internalSearchQuery, setInternalSearchQuery] = useState("");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const effectiveSearchQuery =
+    typeof onSearchChange === "function" ? searchQuery : internalSearchQuery;
 
   // ReferenceError se bachne ke liye displayName ko sabse upar define karein
   const displayName = user?.name || user?.email?.split('@')[0] || "User";
@@ -78,6 +81,15 @@ const Header = () => {
             <input
               type="text"
               placeholder={t("header.search_placeholder")}
+              value={effectiveSearchQuery}
+              onChange={(event) => {
+                const nextValue = event.target.value;
+                if (typeof onSearchChange === "function") {
+                  onSearchChange(nextValue);
+                  return;
+                }
+                setInternalSearchQuery(nextValue);
+              }}
               className="w-full pl-12 pr-4 py-2.5 bg-canvas border border-border rounded-2xl text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none"
             />
           </div>
