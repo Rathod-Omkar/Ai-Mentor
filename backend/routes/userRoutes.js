@@ -15,6 +15,7 @@ import {
   getUserSettings,
   updateUserSettings,
   removePurchasedCourse,
+  deleteAccount,
   changePassword
 } from "../controllers/userController.js";
 
@@ -56,5 +57,7 @@ router.route("/settings")
   .put(protect, updateUserSettings);
 
 router.post("/remove-course", protect, removePurchasedCourse);
+
+router.delete("/delete-account", protect, deleteAccount);
 
 export default router;
