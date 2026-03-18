@@ -84,8 +84,8 @@ export default function CoursePreview() {
       setLoading(true);
       setError(null);
       try {
-        const metaUrl = `${API_BASE_URL}/api/courses/${courseId}`;
-        const learnUrl = `${API_BASE_URL}/api/courses/${courseId}/learning`;
+        const metaUrl = `/api/courses/${courseId}`;//url updated
+        const learnUrl = `/api/courses/${courseId}/learning`; //url updated
 
         const [metaRes, learnRes] = await Promise.all([
           fetch(metaUrl),
@@ -235,7 +235,7 @@ export default function CoursePreview() {
 
     try {
       const token = localStorage.getItem("token");
-      const purchaseUrl = `${API_BASE_URL}/api/users/purchase-course`;
+      const purchaseUrl = `/api/users/purchase-course`;//url updated
       const response = await fetch(purchaseUrl, {
         method: "POST",
         headers: {

@@ -30,8 +30,8 @@ const CoursesPage = () => {
         const token = localStorage.getItem("token");
 
         const [exploreRes, myRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/courses`),
-          fetch(`${API_BASE_URL}/api/courses/my-courses`, {
+          fetch(`/api/courses`), //url updated
+          fetch(`/api/courses/my-courses`, { //url updated
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -68,7 +68,7 @@ const CoursesPage = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch(`${API_BASE_URL}/api/users/purchase-course`, {
+      await fetch(`/api/users/purchase-course`, { //url updated
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,8 +81,8 @@ const CoursesPage = () => {
       });
 
       const [exploreRes, myRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/courses`),
-        fetch(`${API_BASE_URL}/api/courses/my-courses`, {
+        fetch(`/api/courses`), //url updated
+        fetch(`/api/courses/my-courses`, { //url updated
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

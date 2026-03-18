@@ -13,7 +13,6 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import axios from "axios";
 import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -76,7 +75,8 @@ export default function Settings() {
       setDeleting(true);
 
       const token = localStorage.getItem("token");
-      await axios.delete("/api/users/delete-account", {
+      await fetch("/api/users/delete-account", { //axios to fetch updated
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,21 +109,28 @@ export default function Settings() {
         form.append("avatar", avatarFile);
       }
 
-      const response = await axios.put("/api/users/profile", form, {
+      const response = await fetch("/api/users/profile", { //axios to fetch updated
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
+        body: form,
       });
 
-      console.log("✅ Backend response:", response.data);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update profile");
+      }
+
+      console.log("✅ Backend response:", data);
 
       // 🔥 FIX 1: Update context FIRST with fresh data
-      updateUser(response.data);
+      updateUser(data);
 
       // 🔥 FIX 2: Wait for state to update, THEN fetch (or skip fetch entirely)
       setTimeout(async () => {
-        await fetchUserProfile(); // This will now return avatar_url!
+        await fetchUserProfile();
         console.log("🔄 Refetched user:", JSON.parse(localStorage.getItem("user")));
       }, 500);
 
@@ -157,11 +164,20 @@ export default function Settings() {
       if (!user) return;
       try {
         const token = localStorage.getItem("token");
-        const { data } = await axios.get("/api/users/settings", {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch("/api/users/settings", { //axios to fetch updated
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch settings");
+        }
+
         setSettingsData(data);
+
         if (data?.appearance?.language) {
           i18n.changeLanguage(data.appearance.language);
         }
@@ -459,14 +475,16 @@ export default function Settings() {
                         try {
                           const token = localStorage.getItem("token");
 
-                          await axios.put(
-                            "/api/users/settings",
-                            {
-                              notifications: { ...settingsData.notifications },
+                          await fetch("/api/users/settings", { //axios to fetch updated
+                            method: "PUT",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                              "Content-Type": "application/json",
                             },
-                            { headers: { Authorization: `Bearer ${token}` } }
-                          );
-
+                            body: JSON.stringify({
+                              notifications: { ...settingsData.notifications },
+                            }),
+                          });
 
                           toast.success("Notification settings updated successfully!");
                           setOriginalNotifications({ ...settingsData.notifications });
@@ -668,27 +686,25 @@ export default function Settings() {
   try {
     const token = localStorage.getItem("token");
 
-    await axios.put(
-      "/api/users/change-password",
-      {
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
+    await fetch("/api/users/change-password", { //axios to fetch updated
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+      body: JSON.stringify({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      }),
+    });
 
     toast.success("Password updated successfully!");
 
     setPasswordData({
       currentPassword: "",
       newPassword: "",
-      confirmPassword: ""
+      confirmPassword: "",
     });
-
   } catch (error) {
     console.error("Password update error:", error);
     toast.error(error.response?.data?.message || "Failed to update password");
@@ -867,15 +883,19 @@ export default function Settings() {
                         setLoading(true);
                         try {
                           const token = localStorage.getItem("token");
-                          await axios.put(
-                            "/api/users/settings",
-                            {
+                          await fetch("/api/users/settings", { //axios to fetch updated
+                            method: "PUT",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
                               appearance: {
                                 language: settingsData.appearance.language,
                               },
-                            },
-                            { headers: { Authorization: `Bearer ${token}` } }
-                          );
+                            }),
+                          });
+
                           i18n.changeLanguage(settingsData.appearance.language);
                           toast.success("Language settings updated successfully!");
                         } catch (error) {

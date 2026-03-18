@@ -45,7 +45,7 @@ const Sidebar = ({ activePage = "dashboard" }) => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-        const response = await fetch(`${API_BASE_URL}/api/sidebar/navigation`, {
+        const response = await fetch(`/api/sidebar/navigation`, {//url updated
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
         if (!response.ok) return;

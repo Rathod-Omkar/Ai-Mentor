@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Lock, ArrowLeft } from "lucide-react";
 import AuthLayout from "../components/auth/AuthLayout";
-import axios from "axios";
+
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -25,9 +25,22 @@ const ResetPassword = () => {
         setError("");
 
         try {
-            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/reset-password/${token}`, {
-                password,
-            });
+            const response = await fetch(
+                `/api/auth/reset-password/${token}`,//axios to fetch updated
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ password }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Password reset failed");
+            }
 
             setSuccess(true);
             setTimeout(() => {

@@ -40,7 +40,7 @@ const WatchedVideos = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${API_BASE_URL}/api/users/watched-videos`,
+          `/api/users/watched-videos`, //url updated
           {
             headers: {
               Authorization: `Bearer ${token}`,
