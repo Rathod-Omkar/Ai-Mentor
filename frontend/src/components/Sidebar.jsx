@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ChevronRight, LogOut, Settings, User, ShieldCheck, LayoutGrid } from "lucide-react";
-import API_BASE_URL from "../lib/api";
+
 import { useSidebar } from "../context/SidebarContext";
 import { useTranslation } from "react-i18next";
 
