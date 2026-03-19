@@ -47,7 +47,7 @@ const ResetPassword = () => {
                 navigate("/login");
             }, 3000);
         } catch (err) {
-            setError(err.response?.data?.message || err.message);
+            setError(err.message || "Password reset failed"); 
         } finally {
             setLoading(false);
         }

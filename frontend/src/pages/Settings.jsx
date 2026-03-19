@@ -138,8 +138,8 @@ export default function Settings() {
       toast.success("Profile updated successfully!");
       setProfilePopup(true);
     } catch (error) {
-      console.error("❌ Error updating profile:", error.response?.data || error);
-      toast.error("Failed to update profile.");
+      console.error("❌ Error updating profile:", error);
+      toast.error(error.message || "Failed to update profile.");
     } finally {
       setLoading(false);
     }
@@ -474,8 +474,8 @@ export default function Settings() {
                         setLoading(true);
                         try {
                           const token = localStorage.getItem("token");
-
-                          await fetch("/api/users/settings", { //axios to fetch updated
+                          //axios to fetch
+                          const response = await fetch("/api/users/settings", {
                             method: "PUT",
                             headers: {
                               Authorization: `Bearer ${token}`,
@@ -486,11 +486,18 @@ export default function Settings() {
                             }),
                           });
 
+                          const data = await response.json();
+
+                          if (!response.ok) {
+                            throw new Error(data.message || "Failed to update settings");
+                          }
+
                           toast.success("Notification settings updated successfully!");
                           setOriginalNotifications({ ...settingsData.notifications });
+
                         } catch (error) {
                           console.error("Error updating settings:", error);
-                          toast.error("Failed to update settings. Please try again.");
+                          toast.error(error.message || "Failed to update settings. Please try again.");
                         } finally {
                           setLoading(false);
                         }
@@ -683,34 +690,41 @@ export default function Settings() {
 
   setLoading(true);
 
-  try {
-    const token = localStorage.getItem("token");
+                        try {//axios to fetch
+                          const token = localStorage.getItem("token");
 
-    await fetch("/api/users/change-password", { //axios to fetch updated
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword,
-      }),
-    });
+                          const response = await fetch("/api/users/change-password", {
+                            method: "PUT",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              currentPassword: passwordData.currentPassword,
+                              newPassword: passwordData.newPassword,
+                            }),
+                          });
 
-    toast.success("Password updated successfully!");
+                          const data = await response.json();
 
-    setPasswordData({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  } catch (error) {
-    console.error("Password update error:", error);
-    toast.error(error.response?.data?.message || "Failed to update password");
-  } finally {
-    setLoading(false);
-  }
+                          if (!response.ok) {
+                            throw new Error(data.message || "Failed to update password");
+                          }
+
+                          toast.success("Password updated successfully!");
+
+                          setPasswordData({
+                            currentPassword: "",
+                            newPassword: "",
+                            confirmPassword: "",
+                          });
+
+                        } catch (error) {
+                          console.error("Password update error:", error);
+                          toast.error(error.message || "Failed to update password");
+                        } finally {
+                          setLoading(false);
+                        }
 }}
                       disabled={loading}
                       className="h-[50px] px-6 rounded-xl bg-gradient-to-r from-primary to-primary text-white text-[16px] font-medium font-[Inter] hover:opacity-90 disabled:opacity-50"
@@ -883,7 +897,8 @@ export default function Settings() {
                         setLoading(true);
                         try {
                           const token = localStorage.getItem("token");
-                          await fetch("/api/users/settings", { //axios to fetch updated
+                          //400/500 error fix
+                          const response = await fetch("/api/users/settings", {
                             method: "PUT",
                             headers: {
                               Authorization: `Bearer ${token}`,
@@ -896,11 +911,18 @@ export default function Settings() {
                             }),
                           });
 
+                          const data = await response.json();
+
+                          if (!response.ok) {
+                            throw new Error(data.message || "Failed to update settings");
+                          }
+
                           i18n.changeLanguage(settingsData.appearance.language);
                           toast.success("Language settings updated successfully!");
+
                         } catch (error) {
                           console.error("Error updating settings:", error);
-                          toast.error("Failed to update settings. Please try again.");
+                          toast.error(error.message || "Failed to update settings. Please try again.");
                         } finally {
                           setLoading(false);
                         }

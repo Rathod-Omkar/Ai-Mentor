@@ -76,8 +76,7 @@ export default function CoursePreview() {
   const [trustSrc, setTrustSrc] = useState("/ui/trust-badge.png");
   const trustCandidatesRef = useRef([]);
   const trustIndexRef = useRef(0);
-
-  // fetch meta & learning (use API_BASE_URL)
+ // fetch meta & learning via relative /api/... endpoints
   useEffect(() => {
     let cancelled = false;
     const fetchAll = async () => {
