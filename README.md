@@ -54,6 +54,26 @@ npm run dev
 ```
 > See [`frontend/README.md`](./frontend/README.md) for full setup guide.
 
+### 3A. Setup Backend Admin
+```bash
+cd backendAdmin
+npm install
+cp .env.example .env
+# Fill in the required admin backend configuration in .env
+npm run dev
+```
+> See [`backendAdmin/README.md`](./backendAdmin/README.md) for full setup guide.
+
+### 3B. Setup Frontend Admin
+```bash
+cd frontendAdmin
+npm install
+cp .env.example .env
+# Configure the admin frontend to point to the admin backend API
+npm run dev
+```
+> See [`frontendAdmin/README.md`](./frontendAdmin/README.md) for full setup guide.
+
 ### 4. Setup AI Service
 ```bash
 cd ai_service
@@ -109,6 +129,8 @@ Each service has its own `.env` file. Copy the `.env.example` in each folder and
 | `backend/` | `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `AI_SERVICE_URL` |
 | `frontend/` | `VITE_API_BASE_URL`, `VITE_FIREBASE_*` |
 | `ai_service/backend/` | `GEMINI_API_KEY`, `CLOUDINARY_*` |
+| `backendAdmin/` | Admin server, database, authentication, and super admin seed configuration |
+| `frontendAdmin/` | Admin API base URL configuration |
 
 ## Running the Application
 
@@ -127,6 +149,18 @@ cd ai_service && .\venv\Scripts\activate && cd backend && uvicorn api:app --relo
 
 Then open **http://localhost:5173** in your browser.
 
+For the admin panel, also start these services in separate terminals:
+
+```bash
+# Terminal 4 - Admin Backend API
+cd backendAdmin && npm run dev
+
+# Terminal 5 - Admin Frontend
+cd frontendAdmin && npm run dev
+```
+
+Then open **http://localhost:5174** in your browser for the admin dashboard.
+
 ## Project Structure
 
 ```
@@ -134,6 +168,14 @@ AI-Mentor-Updated/
 ├── backend/       # Node.js + Express REST API
 ├── frontend/      # React + Vite web application
 └── ai_service/    # Python + FastAPI AI lesson generator
+```
+
+Additional admin services:
+
+```
+AI-Mentor-Updated/
+backendAdmin/  # Node.js + Express admin REST API
+frontendAdmin/ # React + Vite admin dashboard
 ```
 
 ## About
